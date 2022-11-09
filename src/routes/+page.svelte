@@ -1,5 +1,14 @@
 <script lang="ts">
-	import { ReadableStore, WritableStore } from '$lib';
+	import { keyValueStore } from '$lib';
 
-	let store = new WritableStore('Hello');
+	let kv = new keyValueStore<string>({});
+
+	kv.setKey('hello', 'hi');
+
+	kv.value = {
+		hi: 'HELLLOOO'
+	};
+	console.log(kv.deleteKey('poop'));
+
+	console.log(kv.value);
 </script>
