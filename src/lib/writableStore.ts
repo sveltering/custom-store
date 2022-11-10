@@ -1,10 +1,10 @@
-import { customStore } from './customStore';
-import { subscriberStore } from './subscriberStore';
+import customStore from './customStore';
+import subscriberStore from './subscriberStore';
 import { get } from 'svelte/store';
 
 import type { Writable, Updater } from 'svelte/store';
 
-export class writableStore<T> extends customStore<T> {
+export default class writableStore<T> extends customStore<T> {
 	declare $store: Writable<T>;
 	$hasSubscriber: subscriberStore = new subscriberStore(false);
 	constructor(value: T) {

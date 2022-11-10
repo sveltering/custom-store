@@ -1,8 +1,8 @@
-import type { subscriberStore } from './subscriberStore';
+import type subscriberStore from './subscriberStore';
 import { writable } from 'svelte/store';
 import type { Writable, Readable, Subscriber, Unsubscriber } from 'svelte/store';
 
-export class customStore<T> {
+export default class customStore<T> {
 	$hasSubscriber: subscriberStore | false = false;
 	$store: Writable<T> | Readable<T>;
 	protected _unsubscribes: (Unsubscriber | null)[] = [];

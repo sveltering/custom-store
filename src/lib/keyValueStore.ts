@@ -1,7 +1,7 @@
-import { writableStore } from './writableStore';
+import writableStore from './writableStore';
 export type KeyValue<C> = { [key: string]: C };
 
-export class keyValueStore<C> extends writableStore<KeyValue<C>> {
+export default class keyValueStore<C> extends writableStore<KeyValue<C>> {
 	constructor(value: KeyValue<C> = {}) {
 		super(value);
 		return this;

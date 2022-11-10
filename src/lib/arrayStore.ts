@@ -1,5 +1,5 @@
-import { writableStore } from './writableStore';
-export class arrayStore<A> extends writableStore<A[]> {
+import writableStore from './writableStore';
+export default class arrayStore<A> extends writableStore<A[]> {
 	constructor(value: A[] = []) {
 		super(value);
 		return this;
