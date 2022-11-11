@@ -11,7 +11,7 @@ export class _writableStore<T> extends customStore<T> {
 	constructor(value: T) {
 		super(value);
 		this.$hasSubscriber = new subscriberStore(false);
-		this._destroys.push(this.$hasSubscriber.purge);
+		this._destroys.push(() => this.$hasSubscriber.purge());
 		return this;
 	}
 	set value(value: T) {

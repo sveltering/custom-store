@@ -16,8 +16,6 @@ class _arrayStore<T> extends _writableStore<T[]> {
 			set: function (target: T[], property: string | symbol, value: T) {
 				target[property as any] = value;
 				if (property === 'length') {
-					console.log(value);
-					console.log(target);
 					_this.$store.set(target);
 				}
 				return true;
@@ -26,6 +24,8 @@ class _arrayStore<T> extends _writableStore<T[]> {
 		this._proxy = revocable.proxy;
 		this._revoke = revocable.revoke;
 		this._destroys.push(revocable.revoke);
+
+		console.log(this);
 	}
 	get value(): T[] {
 		return this._proxy;

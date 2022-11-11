@@ -10,7 +10,7 @@
 	};
 	add();
 	const add5 = () => {
-		helloWorld.value.push(1, 2, 3, 4, 5, 67, 8, 9);
+		helloWorld.value.push(1, 2, 3, 4, 5);
 	};
 	const remove3 = () => {
 		helloWorld.value.splice(2, 1);
@@ -21,8 +21,6 @@
 	const replaceAll = () => {
 		helloWorld.value = [10, 9, 8];
 	};
-
-	console.log(helloWorld);
 </script>
 
 {#each $helloWorld as hi}

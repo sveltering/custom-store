@@ -6,7 +6,6 @@ export default class subscriberStore extends customStore<boolean> {
 	$hasSubscriber = false;
 	constructor(value: boolean) {
 		super(value);
-		this._destroys.push(this.purge);
 		return this;
 	}
 }
