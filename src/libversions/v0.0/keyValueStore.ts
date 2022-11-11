@@ -1,4 +1,4 @@
-import writableStore from './writableStore';
+import writableStore from './writableStore.js';
 export type KeyValue<C> = { [key: string]: C };
 
 export default class keyValueStore<C> extends writableStore<KeyValue<C>> {

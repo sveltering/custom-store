@@ -1,23 +1,22 @@
 import type subscriberStore from './subscriberStore.js';
-import { writable, get } from 'svelte/store';
+import { writable } from 'svelte/store';
 import type { Writable, Readable, Subscriber, Unsubscriber } from 'svelte/store';
 
 export default class customStore<T> {
-	$hasSubscriber: subscriberStore | boolean = false;
+	$hasSubscriber: subscriberStore | false = false;
 	$store: Writable<T> | Readable<T>;
-	protected _destroys: CallableFunction[] = [];
 	protected _unsubscribes: (Unsubscriber | null)[] = [];
 
 	constructor(value: T, isWritable: boolean = true) {
 		let _this = this;
 		let $store = writable<T>(value, function start() {
 			if (_this.$hasSubscriber) {
-				(<subscriberStore>_this.$hasSubscriber).$store.set(true);
+				_this.$hasSubscriber.$store.set(true);
 			}
 			return function stop() {
 				_this._unsubscribes = [];
 				if (_this.$hasSubscriber) {
-					(<subscriberStore>_this.$hasSubscriber).$store.set(false);
+					_this.$hasSubscriber.$store.set(false);
 				}
 			};
 		});
@@ -54,24 +53,13 @@ export default class customStore<T> {
 		}
 		return this;
 	}
-	protected _runDestroys(): void {
-		for (let i = 0, iLen = this._destroys.length; i < iLen; i++) {
-			if (typeof this._destroys[i] !== 'function') {
-				continue;
-			}
-			this._destroys[i]();
-		}
-	}
 	purge(): void {
 		this.unsubscribeAll();
-		this._runDestroys();
+		(<subscriberStore>this?.$hasSubscriber)?.purge?.();
+
 		let properties = Object.getOwnPropertyNames(this);
 		for (let i = 0, iLen = properties.length; i < iLen; i++) {
 			delete this[properties[i] as keyof this];
 		}
-	}
-
-	get(): T {
-		return get(this.$store);
 	}
 }

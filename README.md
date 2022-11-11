@@ -1,6 +1,8 @@
 # custom-stores
 > An abstract class upon which to create custom store functionality
 
+
+
 ## Properties
 
 ### `.value` - getter/setter
@@ -37,3 +39,4 @@ store.subscriptionChange((hasSubscriber) =>{
     console.log(hasSubscriber ? "Hooray !" : "No subscribers :(");
 })
 ```
+

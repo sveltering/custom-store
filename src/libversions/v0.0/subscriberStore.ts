@@ -3,10 +3,8 @@ import customStore from './customStore.js';
 
 export default class subscriberStore extends customStore<boolean> {
 	declare $store: Writable<boolean>;
-	$hasSubscriber = false;
 	constructor(value: boolean) {
 		super(value);
-		this._destroys.push(this.purge);
 		return this;
 	}
 }

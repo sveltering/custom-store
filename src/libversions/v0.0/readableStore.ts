@@ -3,13 +3,11 @@ import subscriberStore from './subscriberStore.js';
 import { get } from 'svelte/store';
 import type { Readable } from 'svelte/store';
 
-export class _readableStore<T> extends customStore<T> {
+export default class readableStore<T> extends customStore<T> {
 	declare $store: Readable<T>;
-	$hasSubscriber: subscriberStore;
+	$hasSubscriber: subscriberStore = new subscriberStore(false);
 	constructor(value: T) {
 		super(value);
-		this.$hasSubscriber = new subscriberStore(false);
-		this._destroys.push(this.$hasSubscriber.purge);
 		return this;
 	}
 	get value(): T {
@@ -18,8 +16,4 @@ export class _readableStore<T> extends customStore<T> {
 	get(): T {
 		return get(this.$store);
 	}
-}
-
-export default function readableStore<T>(value: T): _readableStore<T> {
-	return new _readableStore(value);
 }
