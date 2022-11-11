@@ -1,11 +1,11 @@
 import { _writableStore } from './writableStore.js';
-
-import { writable } from 'svelte/store';
-import type { Writable } from 'svelte/store';
-
+import { get } from 'svelte/store';
+export interface arrayStoreConstructorOpts<T> {
+	value: T[];
+}
 class _arrayStore<T> extends _writableStore<T[]> {
-	constructor(value: T[]) {
-		super(value);
+	constructor({ value }: arrayStoreConstructorOpts<T>) {
+		super({ value });
 		this._initProxy(value);
 		return this;
 	}
@@ -16,7 +16,7 @@ class _arrayStore<T> extends _writableStore<T[]> {
 			set: function (target: T[], property: string | symbol, value: T) {
 				target[property as any] = value;
 				if (property === 'length') {
-					_this.$store.set(target);
+					_this.set(target);
 				}
 				return true;
 			}
@@ -31,12 +31,12 @@ class _arrayStore<T> extends _writableStore<T[]> {
 		return this._proxy;
 	}
 	set value(value: T[]) {
-		this.$store.set(value);
 		this?._revoke?.();
+		this.set(value);
 		this._initProxy(value);
 	}
 }
 
 export default function arrayStore<T>(value: T[]): _arrayStore<T> {
-	return new _arrayStore<T>(value);
+	return new _arrayStore<T>({ value });
 }

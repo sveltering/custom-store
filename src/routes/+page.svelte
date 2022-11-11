@@ -5,8 +5,7 @@
 
 	let i = 0;
 	const add = () => {
-		i++;
-		helloWorld.value.push('POOOOP ' + i);
+		helloWorld.value.push('POOOOP ' + ++i);
 	};
 	add();
 	const add5 = () => {

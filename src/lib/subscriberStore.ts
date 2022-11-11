@@ -1,11 +1,13 @@
 import type { Writable } from 'svelte/store';
 import customStore from './customStore.js';
 
+export interface subscriberStoreConstructorOpts {
+	value: boolean;
+}
 export default class subscriberStore extends customStore<boolean> {
 	declare $store: Writable<boolean>;
-	$hasSubscriber = false;
-	constructor(value: boolean) {
-		super(value);
+	constructor({ value }: subscriberStoreConstructorOpts) {
+		super({ value, hasSubscriber: false });
 		return this;
 	}
 }

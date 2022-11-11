@@ -2,22 +2,28 @@ import type subscriberStore from './subscriberStore.js';
 import { writable, get } from 'svelte/store';
 import type { Writable, Readable, Subscriber, Unsubscriber } from 'svelte/store';
 
-export default class customStore<T> {
-	$hasSubscriber: subscriberStore | boolean = false;
+export interface customStoreConstructorOpts<T> {
+	value: T;
+	isWritable?: boolean;
+	hasSubscriber?: boolean;
+}
+
+export default class _customStore<T> {
 	$store: Writable<T> | Readable<T>;
+	declare $hasSubscriber: subscriberStore;
 	protected _destroys: CallableFunction[] = [];
 	protected _unsubscribes: (Unsubscriber | null)[] = [];
 
-	constructor(value: T, isWritable: boolean = true) {
+	constructor({ value, isWritable = true, hasSubscriber = false }: customStoreConstructorOpts<T>) {
 		let _this = this;
 		let $store = writable<T>(value, function start() {
-			if (_this.$hasSubscriber) {
-				(<subscriberStore>_this.$hasSubscriber).$store.set(true);
+			if (hasSubscriber) {
+				_this.$hasSubscriber.$store.set(true);
 			}
 			return function stop() {
 				_this._unsubscribes = [];
-				if (_this.$hasSubscriber) {
-					(<subscriberStore>_this.$hasSubscriber).$store.set(false);
+				if (hasSubscriber) {
+					_this.$hasSubscriber.$store.set(false);
 				}
 			};
 		});
