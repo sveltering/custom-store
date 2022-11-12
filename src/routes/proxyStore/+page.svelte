@@ -23,7 +23,11 @@
 	setTimeout(() => {
 		delete KV.value.array;
 		console.log(KV._revokes);
-	}, 60000);
+	}, 3000);
+	setTimeout(() => {
+		KV.value = 'hi';
+		console.log(KV._revokes);
+	}, 4000);
 
 	KV.subscribe((value) => {
 		console.log(JSON.parse(JSON.stringify(value)));

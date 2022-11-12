@@ -1,12 +1,12 @@
 import { _writableStore } from './writableStore.js';
 
-type proxyValueType<T> = T | proxyObjType<T>;
-
 export interface proxyObjType<T> {
 	[key: string | number]: proxyValueType<T>;
 }
 
-export interface keyValueStoreConstructorOpts<T> {
+export type proxyValueType<T> = T | proxyObjType<T>;
+
+interface keyValueStoreConstructorOpts<T> {
 	value: proxyValueType<T>;
 }
 
@@ -45,9 +45,6 @@ class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
 let isArrayType = function (a: unknown): boolean {
 	return !!a && a.constructor === Array;
 };
-let isObjectType = function (a: unknown): boolean {
-	return !!a && a.constructor === Object;
-};
 let isProxyType = function (a: unknown): boolean {
 	return !!a && (a.constructor === Object || a.constructor === Array);
 };
@@ -62,7 +59,7 @@ function _revokeNested<T>(_this: _proxyStore<T>, target: proxyObjType<T>) {
 	}
 }
 
-export interface proxifyOpts<T> {
+interface proxifyOpts<T> {
 	target: proxyValueType<T>;
 	_this: _proxyStore<T>;
 }
