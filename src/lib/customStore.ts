@@ -11,7 +11,7 @@ export interface customStoreConstructorOpts<T> {
 export default class _customStore<T> {
 	$store: Writable<T> | Readable<T>;
 	declare $hasSubscriber: subscriberStore;
-	protected _destroys: CallableFunction[] = [];
+	_destroys: CallableFunction[] = [];
 	protected _unsubscribes: (Unsubscriber | null)[] = [];
 
 	constructor({ value, isWritable = true, hasSubscriber = false }: customStoreConstructorOpts<T>) {

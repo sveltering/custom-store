@@ -10,11 +10,11 @@ export interface writableStoreConstructorOpts<T> {
 
 export class _writableStore<T> extends _customStore<T> {
 	declare $store: Writable<T>;
-	$hasSubscriber: subscriberStore;
-	protected _revoke!: CallableFunction;
-	protected _proxy!: T;
+	declare _proxy: T;
+	declare _revoke: CallableFunction;
 	constructor({ value }: writableStoreConstructorOpts<T>) {
 		super({ value });
+		this._proxy = value;
 		this.$hasSubscriber = new subscriberStore({ value: false });
 		this._destroys.push(() => this.$hasSubscriber.purge());
 		return this;

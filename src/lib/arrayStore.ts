@@ -24,8 +24,6 @@ class _arrayStore<T> extends _writableStore<T[]> {
 		this._proxy = revocable.proxy;
 		this._revoke = revocable.revoke;
 		this._destroys.push(revocable.revoke);
-
-		console.log(this);
 	}
 	get value(): T[] {
 		return this._proxy;
@@ -37,6 +35,6 @@ class _arrayStore<T> extends _writableStore<T[]> {
 	}
 }
 
-export default function arrayStore<T>(value: T[]): _arrayStore<T> {
+export default function arrayStore<T>(value: T[] = []): _arrayStore<T> {
 	return new _arrayStore<T>({ value });
 }
