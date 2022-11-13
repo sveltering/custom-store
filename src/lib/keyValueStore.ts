@@ -7,6 +7,7 @@ export interface keyValueStoreConstructorOpts<T> {
 	value: keyValue<T>;
 }
 class _keyValueStore<T> extends _writableStore<keyValue<T>> {
+	declare _revoke: CallableFunction;
 	constructor({ value }: keyValueStoreConstructorOpts<T>) {
 		super({ value });
 		this._initProxy(value);

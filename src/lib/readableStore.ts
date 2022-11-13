@@ -9,17 +9,13 @@ export interface readableStoreConstructorOpts<T> {
 
 export class _readableStore<T> extends _customStore<T> {
 	declare $store: Readable<T>;
-	$hasSubscriber: subscriberStore;
+	$hasSubscriber: subscriberStore<T>;
 	constructor({ value }: readableStoreConstructorOpts<T>) {
 		super({ value });
-		this.$hasSubscriber = new subscriberStore({ value: false });
-		this._destroys.push(() => this.$hasSubscriber.purge());
+		this.$hasSubscriber = new subscriberStore<T>({ value: false, _this: this });
 		return this;
 	}
 	get value(): T {
-		return get(this.$store);
-	}
-	get(): T {
 		return get(this.$store);
 	}
 }

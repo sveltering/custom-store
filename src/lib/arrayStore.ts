@@ -4,6 +4,7 @@ export interface arrayStoreConstructorOpts<T> {
 	value: T[];
 }
 class _arrayStore<T> extends _writableStore<T[]> {
+	declare _revoke: CallableFunction;
 	constructor({ value }: arrayStoreConstructorOpts<T>) {
 		super({ value });
 		this._initProxy(value);

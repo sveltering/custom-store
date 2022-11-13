@@ -1,7 +1,6 @@
 import _customStore from './customStore.js';
 import subscriberStore from './subscriberStore.js';
 
-import { get } from 'svelte/store';
 import type { Writable, Updater } from 'svelte/store';
 
 export interface writableStoreConstructorOpts<T> {
@@ -11,12 +10,11 @@ export interface writableStoreConstructorOpts<T> {
 export class _writableStore<T> extends _customStore<T> {
 	declare $store: Writable<T>;
 	declare _proxy: T;
-	declare _revoke: CallableFunction;
+	$hasSubscriber: subscriberStore<T>;
 	constructor({ value }: writableStoreConstructorOpts<T>) {
 		super({ value });
 		this._proxy = value;
-		this.$hasSubscriber = new subscriberStore({ value: false });
-		this._destroys.push(() => this.$hasSubscriber.purge());
+		this.$hasSubscriber = new subscriberStore<T>({ value: false, _this: this });
 		return this;
 	}
 	set value(value: T) {
@@ -29,9 +27,6 @@ export class _writableStore<T> extends _customStore<T> {
 	set(value: T): this {
 		this.$store.set(value);
 		return this;
-	}
-	get(): T {
-		return get(this.$store);
 	}
 	update(callable: Updater<T>): this {
 		this.$store.update(callable);

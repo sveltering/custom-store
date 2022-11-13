@@ -10,9 +10,10 @@ export interface customStoreConstructorOpts<T> {
 
 export default class _customStore<T> {
 	$store: Writable<T> | Readable<T>;
-	declare $hasSubscriber: subscriberStore;
-	_destroys: CallableFunction[] = [];
+	_destroys: (CallableFunction | null)[] = [];
+	private _setNull: CallableFunction;
 	protected _unsubscribes: (Unsubscriber | null)[] = [];
+	declare $hasSubscriber: subscriberStore<T>;
 
 	constructor({ value, isWritable = true, hasSubscriber = false }: customStoreConstructorOpts<T>) {
 		let _this = this;
@@ -34,6 +35,9 @@ export default class _customStore<T> {
 		else {
 			this.$store = { subscribe: $store.subscribe };
 		}
+		this._setNull = () => {
+			(<Writable<any>>$store).set(null);
+		};
 
 		return this;
 	}
@@ -62,19 +66,22 @@ export default class _customStore<T> {
 	}
 	protected _runDestroys(): void {
 		for (let i = 0, iLen = this._destroys.length; i < iLen; i++) {
-			if (typeof this._destroys[i] !== 'function') {
-				continue;
+			if (typeof this._destroys[i] === 'function') {
+				(<CallableFunction>this._destroys[i])();
 			}
-			this._destroys[i]();
+			this._destroys[i] = null;
 		}
 	}
 	purge(): void {
 		this.unsubscribeAll();
 		this._runDestroys();
+		this._setNull();
 		let properties = Object.getOwnPropertyNames(this);
 		for (let i = 0, iLen = properties.length; i < iLen; i++) {
 			delete this[properties[i] as keyof this];
 		}
+		//@ts-ignore
+		this.__proto__ = null;
 	}
 
 	get(): T {

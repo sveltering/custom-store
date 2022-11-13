@@ -12,20 +12,19 @@ interface keyValueStoreConstructorOpts<T> {
 
 type _proxyPropType<T> = { value: proxyValueType<T> };
 
-class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
+export class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
 	declare _proxy: _proxyPropType<T>;
-	_revokes: Map<proxyObjType<T>, CallableFunction> = new Map();
+	_revokes: WeakSet<proxyObjType<T>> = new WeakSet();
 	constructor({ value }: keyValueStoreConstructorOpts<T>) {
 		super({ value });
 		this.value = value;
+		let _this = this;
+		this._destroys.push(() => (_this._revokes = null!!));
 		return this;
 	}
 
 	protected _initProxy(value: proxyValueType<T>): void {
-		this._revokes.forEach((revoke) => {
-			revoke();
-		});
-		this._revokes = new Map();
+		this._revokes = new WeakSet();
 		this._proxy = { value };
 		this._proxy = <_proxyPropType<T>>proxify({
 			target: this._proxy,
@@ -45,17 +44,19 @@ class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
 let isArrayType = function (a: unknown): boolean {
 	return !!a && a.constructor === Array;
 };
-let isProxyType = function (a: unknown): boolean {
+let isProxyableType = function (a: unknown): boolean {
 	return !!a && (a.constructor === Object || a.constructor === Array);
 };
 
-function _revokeNested<T>(_this: _proxyStore<T>, target: proxyObjType<T>) {
-	if (_this._revokes.has(target)) {
-		for (let property in target) {
-			_revokeNested(_this, <proxyObjType<T>>target[property]);
+function _revokeNested<T>(_this: _proxyStore<T>, target: proxyValueType<T>): void {
+	if (!isProxyableType(target)) {
+		return;
+	}
+	if (_this._revokes.has(<proxyObjType<T>>target)) {
+		for (let property in <proxyObjType<T>>target) {
+			_revokeNested(_this, (<proxyObjType<T>>target)[<string | number>property]);
 		}
-		(<CallableFunction>_this._revokes.get(target))();
-		_this._revokes.delete(target);
+		_this._revokes.delete(<proxyObjType<T>>target);
 	}
 }
 
@@ -63,45 +64,37 @@ interface proxifyOpts<T> {
 	target: proxyValueType<T>;
 	_this: _proxyStore<T>;
 }
+
 function proxify<T>({ target, _this }: proxifyOpts<T>) {
-	if (!isProxyType(target) || _this._revokes.has(<proxyObjType<T>>target)) {
+	if (!isProxyableType(target) || _this._revokes.has(<proxyObjType<T>>target)) {
 		return target;
 	}
 
-	let revocable = Proxy.revocable(<proxyObjType<T>>target, {
+	let proxy = new Proxy(<proxyObjType<T>>target, {
 		set: function (target, property, value) {
-			if (property in target) {
-				_revokeNested(_this, <proxyObjType<T>>target[<string | number>property]);
+			if (target[<string | number>property] === value) {
+				return true;
 			}
+			_revokeNested(_this, target[<string | number>property]);
 			target[<string | number>property] = proxify({
 				target: value,
 				_this
 			});
-
-			if (isArrayType(target)) {
-				if (property === 'length') {
-					_this.set(_this._proxy.value);
-					return true;
-				}
+			if (isArrayType(target) && property !== 'length') {
 				return true;
 			}
-
 			_this.set(_this._proxy.value);
 			return true;
 		},
 		deleteProperty(target, property) {
-			if (property in target) {
-				_revokeNested(_this, <proxyObjType<T>>target[<string | number>property]);
-				delete target[<string | number>property];
+			if (!(property in target)) {
+				return false;
 			}
-			if (isArrayType(target)) {
-				if (property === 'length') {
-					_this.set(_this._proxy.value);
-					return true;
-				}
+			_revokeNested(_this, target[<string | number>property]);
+			delete target[<string | number>property];
+			if (isArrayType(target) && property !== 'length') {
 				return true;
 			}
-
 			_this.set(_this._proxy.value);
 			return true;
 		}
@@ -113,8 +106,8 @@ function proxify<T>({ target, _this }: proxifyOpts<T>) {
 			_this
 		});
 	}
-	_this._revokes.set(revocable.proxy, revocable.revoke);
-	return revocable.proxy;
+	_this._revokes.add(proxy);
+	return proxy;
 }
 
 export default function proxyStore<T>(value: proxyValueType<T>) {
