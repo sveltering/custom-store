@@ -13,7 +13,7 @@ export class _writableStore<T> extends _customStore<T> {
 	$hasSubscriber: subscriberStore<T>;
 	constructor({ value }: writableStoreConstructorOpts<T>) {
 		super({ value });
-		this._proxy = value;
+		this.value = value;
 		this.$hasSubscriber = new subscriberStore<T>({ value: false, _this: this });
 		return this;
 	}

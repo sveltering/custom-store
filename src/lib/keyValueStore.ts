@@ -10,7 +10,7 @@ class _keyValueStore<T> extends _writableStore<keyValue<T>> {
 	declare _proxy: keyValue<T>;
 	constructor({ value }: keyValueStoreConstructorOpts<T>) {
 		super({ value });
-		this._initProxy(value);
+		this.value = value;
 		let _this = this;
 		this._destroys.push(() => ((<any>_this._proxy) = null));
 		return this;

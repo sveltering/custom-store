@@ -6,7 +6,7 @@ class _arrayStore<T> extends _writableStore<T[]> {
 	declare _proxy: T[];
 	constructor({ value }: arrayStoreConstructorOpts<T>) {
 		super({ value });
-		this._initProxy(value);
+		this.value = value;
 		let _this = this;
 		this._destroys.push(() => ((<any>_this._proxy) = null));
 		return this;

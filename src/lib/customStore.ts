@@ -62,6 +62,7 @@ export default class _customStore<T> {
 		for (let i = 0, iLen = this._unsubscribes.length; i < iLen; i++) {
 			this._unsubscribe(i);
 		}
+		this._unsubscribes = [];
 		return this;
 	}
 	protected _runDestroys(): void {
@@ -71,6 +72,7 @@ export default class _customStore<T> {
 			}
 			this._destroys[i] = null;
 		}
+		this._destroys = [];
 	}
 	purge(): void {
 		this.unsubscribeAll();
