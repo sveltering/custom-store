@@ -4,16 +4,18 @@ export interface arrayStoreConstructorOpts<T> {
 	value: T[];
 }
 class _arrayStore<T> extends _writableStore<T[]> {
-	declare _revoke: CallableFunction;
+	declare _proxy: T[];
 	constructor({ value }: arrayStoreConstructorOpts<T>) {
 		super({ value });
 		this._initProxy(value);
+		let _this = this;
+		this._destroys.push(() => ((<any>_this._proxy) = null));
 		return this;
 	}
 
 	protected _initProxy(value: T[]): void {
 		let _this = this;
-		let revocable = Proxy.revocable<T[]>(value, {
+		this._proxy = new Proxy<T[]>(value, {
 			set: function (target: T[], property: string | symbol, value: T) {
 				target[property as any] = value;
 				if (property === 'length') {
@@ -22,16 +24,12 @@ class _arrayStore<T> extends _writableStore<T[]> {
 				return true;
 			}
 		});
-		this._proxy = revocable.proxy;
-		this._revoke = revocable.revoke;
-		this._destroys.push(revocable.revoke);
+		this.set(this._proxy);
 	}
 	get value(): T[] {
 		return this._proxy;
 	}
 	set value(value: T[]) {
-		this?._revoke?.();
-		this.set(value);
 		this._initProxy(value);
 	}
 }

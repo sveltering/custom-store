@@ -19,7 +19,10 @@ export class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
 		super({ value });
 		this.value = value;
 		let _this = this;
-		this._destroys.push(() => (_this._revokes = null!!));
+		this._destroys.push(() => {
+			(<any>_this._revokes) = null;
+			(<any>_this._proxy) = null;
+		});
 		return this;
 	}
 

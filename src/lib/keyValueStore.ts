@@ -7,32 +7,30 @@ export interface keyValueStoreConstructorOpts<T> {
 	value: keyValue<T>;
 }
 class _keyValueStore<T> extends _writableStore<keyValue<T>> {
-	declare _revoke: CallableFunction;
+	declare _proxy: keyValue<T>;
 	constructor({ value }: keyValueStoreConstructorOpts<T>) {
 		super({ value });
 		this._initProxy(value);
+		let _this = this;
+		this._destroys.push(() => ((<any>_this._proxy) = null));
 		return this;
 	}
 
 	protected _initProxy(value: keyValue<T>): void {
 		let _this = this;
-		let revocable = Proxy.revocable<keyValue<T>>(value, {
+		this._proxy = new Proxy<keyValue<T>>(value, {
 			set: function (target: keyValue<T>, property: string | symbol, value: T) {
 				target[property as any] = value;
 				_this.set(target);
 				return true;
 			}
 		});
-		this._proxy = revocable.proxy;
-		this._revoke = revocable.revoke;
-		this._destroys.push(revocable.revoke);
+		this.set(this._proxy);
 	}
 	get value(): keyValue<T> {
 		return this._proxy;
 	}
 	set value(value: keyValue<T>) {
-		this?._revoke?.();
-		this.set(value);
 		this._initProxy(value);
 	}
 }
