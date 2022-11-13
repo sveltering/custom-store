@@ -14,7 +14,7 @@ type _proxyPropType<T> = { value: proxyValueType<T> };
 
 export class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
 	declare _proxy: _proxyPropType<T>;
-	_revokes: WeakSet<proxyObjType<T>> = new WeakSet();
+	declare _revokes: WeakSet<proxyObjType<T>>;
 	constructor({ value }: keyValueStoreConstructorOpts<T>) {
 		super({ value });
 		this.value = value;

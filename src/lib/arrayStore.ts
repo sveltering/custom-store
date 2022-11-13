@@ -1,5 +1,4 @@
 import { _writableStore } from './writableStore.js';
-import { get } from 'svelte/store';
 export interface arrayStoreConstructorOpts<T> {
 	value: T[];
 }
