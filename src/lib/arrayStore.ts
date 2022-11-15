@@ -18,18 +18,22 @@ class _arrayStore<T> extends _writableStore<T[]> {
 			set: function (target: T[], property: string | symbol, value: T) {
 				target[property as any] = value;
 				if (property === 'length') {
-					_this.set(target);
+					_this.$store.set(target);
 				}
 				return true;
 			}
 		});
-		this.set(this._proxy);
+		this.$store.set(this._proxy);
 	}
 	get value(): T[] {
 		return this._proxy;
 	}
 	set value(value: T[]) {
 		this._initProxy(value);
+	}
+	set(value: T[]): this {
+		this.value = value;
+		return this;
 	}
 }
 

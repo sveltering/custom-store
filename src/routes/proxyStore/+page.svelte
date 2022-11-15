@@ -7,10 +7,6 @@
 		key1: { one: 1 }
 	});
 
-	let properties = Object.getOwnPropertyNames(KV);
-	for (let i = 0, iLen = properties.length; i < iLen; i++) {
-		console.log(properties[i]);
-	}
 	function loadem() {
 		for (let i = 0; i < 1000; i++) {
 			KV.value.array.push({ chonky: 'chonks' });
@@ -23,6 +19,8 @@
 		KV.purge();
 		console.log(KV);
 	}
+
+	KV.subscribe((value) => console.log(value));
 </script>
 
 <button on:click={loadem}>Load em up</button><br />

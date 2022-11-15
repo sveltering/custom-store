@@ -21,17 +21,21 @@ class _keyValueStore<T> extends _writableStore<keyValue<T>> {
 		this._proxy = new Proxy<keyValue<T>>(value, {
 			set: function (target: keyValue<T>, property: string | symbol, value: T) {
 				target[property as any] = value;
-				_this.set(target);
+				_this.$store.set(target);
 				return true;
 			}
 		});
-		this.set(this._proxy);
+		this.$store.set(this._proxy);
 	}
 	get value(): keyValue<T> {
 		return this._proxy;
 	}
 	set value(value: keyValue<T>) {
 		this._initProxy(value);
+	}
+	set(value: keyValue<T>): this {
+		this.value = value;
+		return this;
 	}
 }
 
