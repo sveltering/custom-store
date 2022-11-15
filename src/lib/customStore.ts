@@ -1,4 +1,4 @@
-import type subscriberStore from './subscriberStore.js';
+import type subscriberStore from './readableStore/subscriberStore/subscriberStore.js';
 import { writable, get } from 'svelte/store';
 import type { Writable, Readable, Subscriber, Unsubscriber } from 'svelte/store';
 

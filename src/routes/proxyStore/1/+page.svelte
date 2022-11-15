@@ -18,6 +18,7 @@
 
 	setTimeout(() => {
 		KV.value.array.push('Start');
+		console.log(KV.value.array.length);
 	}, 4000);
 	$: console.log($KV);
 </script>

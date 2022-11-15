@@ -1,5 +1,5 @@
-import _customStore from './customStore.js';
-import subscriberStore from './subscriberStore.js';
+import _customStore from '../customStore.js';
+import subscriberStore from '../readableStore/subscriberStore/subscriberStore.js';
 
 import type { Writable, Updater } from 'svelte/store';
 
@@ -9,27 +9,33 @@ export interface writableStoreConstructorOpts<T> {
 
 export class _writableStore<T> extends _customStore<T> {
 	declare $store: Writable<T>;
-	declare _proxy: T;
+	declare _proxy: { value: T };
 	$hasSubscriber: subscriberStore<T>;
 	constructor({ value }: writableStoreConstructorOpts<T>) {
 		super({ value });
 		this.value = value;
-		this.$hasSubscriber = new subscriberStore<T>({ value: false, _this: this });
+		let _this = this;
+		this.$hasSubscriber = new subscriberStore<T>({ value: false, _this });
+		this._destroys.push(() => ((<any>_this._proxy) = null));
 		return this;
 	}
+
+	protected _initProxy(value: T): void {
+		this._proxy = { value };
+		this.$store.set(this._proxy.value);
+	}
 	set value(value: T) {
-		this._proxy = value;
-		this.$store.set(value);
+		this._initProxy(value);
 	}
 	get value(): T {
-		return this._proxy;
+		return this._proxy.value;
 	}
 	set(value: T): this {
-		this.$store.set(value);
+		this._initProxy(value);
 		return this;
 	}
 	update(callable: Updater<T>): this {
-		this.$store.update(callable);
+		this.value = callable(this.value);
 		return this;
 	}
 }

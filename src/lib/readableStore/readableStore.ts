@@ -1,5 +1,5 @@
-import _customStore from './customStore.js';
-import subscriberStore from './subscriberStore.js';
+import _customStore from '../customStore.js';
+import subscriberStore from './subscriberStore/subscriberStore.js';
 import { get } from 'svelte/store';
 import type { Readable } from 'svelte/store';
 

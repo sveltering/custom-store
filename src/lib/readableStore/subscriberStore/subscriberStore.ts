@@ -1,6 +1,6 @@
 import type { Writable } from 'svelte/store';
-import customStore from './customStore.js';
-import type _customStore from './customStore.js';
+import customStore from '../../customStore.js';
+import type _customStore from '../../customStore.js';
 
 export interface subscriberStoreConstructorOpts<T> {
 	value: boolean;

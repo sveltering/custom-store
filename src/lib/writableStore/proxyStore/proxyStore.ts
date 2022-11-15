@@ -1,4 +1,4 @@
-import { _writableStore } from './writableStore.js';
+import { _writableStore } from '../writableStore.js';
 
 export interface proxyObjType<T> {
 	[key: string | number | symbol]: proxyValueType<T>;
@@ -10,41 +10,23 @@ interface keyValueStoreConstructorOpts<T> {
 	value: proxyValueType<T>;
 }
 
-type _proxyPropType<T> = { value: proxyValueType<T> };
-
 export class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
-	declare _proxy: _proxyPropType<T>;
 	constructor({ value }: keyValueStoreConstructorOpts<T>) {
 		super({ value });
-		this.value = value;
-		let _this = this;
-		this._destroys.push(() => ((<any>_this._proxy) = null));
 		return this;
 	}
 
 	protected _initProxy(value: proxyValueType<T>): void {
 		this._proxy = { value };
-		this._proxy = <_proxyPropType<T>>proxify({
+		//@ts-ignore
+		this._proxy = proxify({
 			target: this._proxy,
 			_this: this
 		});
 		this.$store.set((<proxyObjType<T>>this._proxy).value);
 	}
-	get value(): proxyValueType<T> {
-		return this._proxy.value;
-	}
-	set value(value: proxyValueType<T>) {
-		this._initProxy(value);
-	}
-	set(value: proxyValueType<T>): this {
-		this.value = value;
-		return this;
-	}
 }
 
-let isArrayType = function (a: unknown): boolean {
-	return !!a && a.constructor === Array;
-};
 let isProxyableType = function (a: unknown): boolean {
 	return !!a && (a.constructor === Object || a.constructor === Array);
 };
@@ -63,7 +45,7 @@ function proxify<T>({ target, _this }: proxifyOpts<T>) {
 
 			if (
 				//@ts-ignore
-				!target[property]._$$isProxyStore &&
+				!target[property]?._$$isProxyStore &&
 				target.hasOwnProperty(property) &&
 				isProxyableType(target[property])
 			) {
