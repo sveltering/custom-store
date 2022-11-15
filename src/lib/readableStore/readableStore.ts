@@ -11,7 +11,7 @@ export class _readableStore<T> extends _customStore<T> {
 	declare $store: Readable<T>;
 	$hasSubscriber: subscriberStore<T>;
 	constructor({ value }: readableStoreConstructorOpts<T>) {
-		super({ value });
+		super({ value, hasSubscriber: true });
 		this.$hasSubscriber = new subscriberStore<T>({ value: false, _this: this });
 		return this;
 	}

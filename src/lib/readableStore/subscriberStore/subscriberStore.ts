@@ -9,7 +9,7 @@ export interface subscriberStoreConstructorOpts<T> {
 export default class subscriberStore<T> extends customStore<boolean> {
 	declare $store: Writable<boolean>;
 	constructor({ value, _this }: subscriberStoreConstructorOpts<T>) {
-		super({ value, hasSubscriber: false });
+		super({ value });
 		this._destroys.push(() => _this.$hasSubscriber.purge());
 		return this;
 	}

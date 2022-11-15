@@ -1,19 +1,36 @@
 # custom-stores
-> An abstract class upon which to create custom store functionality
+> Stores like never done before (Disclaimer: I havn't checked). Extends on sveltes' own store implementation
 
 
+# Readable store
+> Implementation not 100% complete. 
+>  Store value can't be changed once initated, rendering current usbaility - useless.
+> 
+> **HOWEVER** - All other stores use the same properties and methods
+
+## Install and import
+```console
+npm -i @sveltering/custom-store
+```
+```typescript
+import { readableStore } from '@sveltering/custom-store';
+
+let store = readableStore(/*value*/)
+```
 
 ## Properties
 
-### `.value` - getter/setter
+### `.value` - getter
+Gets the current store value
 ```typescript
-let value  = store.value //value will be the current store value
-store.value = "new value" //sets the new store value
+let store  = readableStore("Store value") //value will be the current store value
+store.value // "Store value"
 ```
 
 ### `.store` - getter
+Gives direct access to svelte store object
 ```typescript
-let $store  = store.store //gets the svelte store object 
+let $store  = store.$store // { subscribe:  fn }
 ```
 
 
