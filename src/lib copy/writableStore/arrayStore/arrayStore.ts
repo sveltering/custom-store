@@ -1,19 +1,20 @@
 import { _writableStore } from '../writableStore.js';
-
-export interface arrayStoreOpts<T> {
+export interface arrayStoreConstructorOpts<T> {
 	value: T[];
 }
 class _arrayStore<T> extends _writableStore<T[]> {
-	constructor({ value }: arrayStoreOpts<T>) {
+	constructor({ value }: arrayStoreConstructorOpts<T>) {
 		super({ value });
 		return this;
 	}
+
 	protected _initProxy(value: T[]): void {
 		let _this = this;
-		this._proxy = {} as any;
-		this._proxy.value = new Proxy(value, {
-			set: function (target, property, value) {
-				target[property as unknown as number] = value;
+		//@ts-ignore
+		this._proxy = {};
+		this._proxy.value = new Proxy<T[]>(value, {
+			set: function (target: T[], property: string | symbol, value: T) {
+				target[property as any] = value;
 				if (property === 'length') {
 					_this.$store.set(target);
 				}
@@ -23,6 +24,7 @@ class _arrayStore<T> extends _writableStore<T[]> {
 		this.$store.set(this._proxy.value);
 	}
 }
+
 export default function arrayStore<T>(value: T[] = []): _arrayStore<T> {
-	return new _arrayStore({ value });
+	return new _arrayStore<T>({ value });
 }

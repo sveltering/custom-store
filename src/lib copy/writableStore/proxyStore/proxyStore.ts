@@ -1,49 +1,59 @@
 import { _writableStore } from '../writableStore.js';
-import type { keyValueType } from '../keyValueStore/keyValueStore.js';
 
-export type proxyValueType<T> = T | keyValueType<T>;
+export interface proxyObjType<T> {
+	[key: string | number | symbol]: proxyValueType<T>;
+}
 
-export interface proxyStoreOpts<T> {
+export type proxyValueType<T> = T | proxyObjType<T>;
+
+interface keyValueStoreConstructorOpts<T> {
 	value: proxyValueType<T>;
 }
+
 export class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
-	constructor({ value }: proxyStoreOpts<T>) {
+	constructor({ value }: keyValueStoreConstructorOpts<T>) {
 		super({ value });
 		return this;
 	}
-	_initProxy(value: proxyValueType<T>) {
+
+	protected _initProxy(value: proxyValueType<T>): void {
 		this._proxy = { value };
+		//@ts-ignore
 		this._proxy = proxify({
 			target: this._proxy,
 			_this: this
-		}) as { value: proxyValueType<T> };
-		this.$store.set(this._proxy.value);
+		});
+		this.$store.set((<proxyObjType<T>>this._proxy).value);
 	}
 }
-let isProxyableType = function (obj: unknown): boolean {
-	return !!obj && (obj.constructor === Object || obj.constructor === Array);
+
+let isProxyableType = function (a: unknown): boolean {
+	return !!a && (a.constructor === Object || a.constructor === Array);
 };
 
 interface proxifyOpts<T> {
-	target: keyValueType<T>;
+	target: proxyValueType<T>;
 	_this: _proxyStore<T>;
 }
+
 function proxify<T>({ target, _this }: proxifyOpts<T>) {
-	return new Proxy(target, {
+	return new Proxy(<proxyObjType<T>>target, {
 		get: function (target, property) {
 			if (property === '_$$isProxyStore') {
 				return true;
 			}
+
 			if (
-				!(target[property] as keyValueType<T>)?._$$isProxyStore &&
+				!target[property]?._$$isProxyStore &&
 				target.hasOwnProperty(property) &&
 				isProxyableType(target[property])
 			) {
 				target[property] = proxify({
-					target: target[property] as keyValueType<T>,
+					target: target[property],
 					_this
 				});
 			}
+
 			return target?.[property];
 		},
 		set: function (target, property, value) {
@@ -64,6 +74,7 @@ function proxify<T>({ target, _this }: proxifyOpts<T>) {
 		}
 	});
 }
-export default function proxyStore<T>(value: proxyValueType<T>): _proxyStore<T> {
-	return new _proxyStore({ value });
+
+export default function proxyStore<T>(value: proxyValueType<T>) {
+	return new _proxyStore<T>({ value });
 }

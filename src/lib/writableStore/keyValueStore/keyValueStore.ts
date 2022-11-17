@@ -1,24 +1,22 @@
 import { _writableStore } from '../writableStore.js';
 
-export interface keyValue<T> {
-	[key: string]: T;
+export interface keyValueType<T> {
+	[key: string | number | symbol]: T | keyValueType<T>;
 }
-export interface keyValueStoreConstructorOpts<T> {
-	value: keyValue<T>;
+export interface keyValueStoreOpts<T> {
+	value: keyValueType<T>;
 }
-class _keyValueStore<T> extends _writableStore<keyValue<T>> {
-	constructor({ value }: keyValueStoreConstructorOpts<T>) {
+class _keyValueStore<T> extends _writableStore<keyValueType<T>> {
+	constructor({ value }: keyValueStoreOpts<T>) {
 		super({ value });
 		return this;
 	}
-
-	protected _initProxy(value: keyValue<T>): void {
+	_initProxy(value: keyValueType<T>) {
 		let _this = this;
-		//@ts-ignore
-		this._proxy = {};
-		this._proxy.value = new Proxy<keyValue<T>>(value, {
-			set: function (target: keyValue<T>, property: string | symbol, value: T) {
-				target[property as any] = value;
+		this._proxy = {} as any;
+		this._proxy.value = new Proxy(value, {
+			set: function (target, property, value) {
+				target[property as unknown as number | string] = value;
 				_this.$store.set(target);
 				return true;
 			}
@@ -26,7 +24,6 @@ class _keyValueStore<T> extends _writableStore<keyValue<T>> {
 		this.$store.set(this._proxy.value);
 	}
 }
-
-export default function keyValueStore<T>(value: keyValue<T> = {}): _keyValueStore<T> {
-	return new _keyValueStore<T>({ value });
+export default function keyValueStore<T>(value: keyValueType<T> = {}): _keyValueStore<T> {
+	return new _keyValueStore({ value });
 }
