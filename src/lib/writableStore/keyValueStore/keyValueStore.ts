@@ -1,7 +1,7 @@
 import { _writableStore } from '../writableStore.js';
 
 export interface keyValueType<T> {
-	[key: string | number | symbol]: T | keyValueType<T>;
+	[key: string | number | symbol]: T;
 }
 export interface keyValueStoreOpts<T> {
 	value: keyValueType<T>;
