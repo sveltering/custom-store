@@ -5,10 +5,10 @@ import type { Writable, Updater } from 'svelte/store';
 export interface writableStoreOpts<T> {
 	value: T;
 }
-export class _writableStore<T> extends _customStore<T> {
+export class _writableStore<T, R extends T> extends _customStore<T, R> {
 	declare $store: Writable<T>;
 	$hasSubscriber: subscriberStore;
-	declare _proxy: { value: T };
+	declare _proxy: { value: R };
 	constructor({ value }: writableStoreOpts<T>) {
 		super({ value, hasSubscriber: true });
 		this.value = value;
@@ -18,13 +18,13 @@ export class _writableStore<T> extends _customStore<T> {
 		return this;
 	}
 	protected _initProxy(value: T): void {
-		this._proxy = { value };
+		this._proxy = { value: value as R };
 		this.$store.set(this._proxy.value);
 	}
 	set value(value: T) {
 		this._initProxy(value);
 	}
-	get value(): T {
+	get value(): R {
 		return this._proxy.value;
 	}
 	set(value: T): this {
@@ -36,6 +36,6 @@ export class _writableStore<T> extends _customStore<T> {
 		return this;
 	}
 }
-export default function writableStore<T>(value: T): _writableStore<T> {
+export default function writableStore<T>(value: T): _writableStore<T, T> {
 	return new _writableStore({ value });
 }

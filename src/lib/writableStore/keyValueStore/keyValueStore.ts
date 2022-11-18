@@ -6,7 +6,7 @@ export interface keyValueType<T> {
 export interface keyValueStoreOpts<T> {
 	value: keyValueType<T>;
 }
-class _keyValueStore<T> extends _writableStore<keyValueType<T>> {
+class _keyValueStore<T> extends _writableStore<keyValueType<T>, keyValueType<T>> {
 	constructor({ value }: keyValueStoreOpts<T>) {
 		super({ value });
 		return this;

@@ -1,0 +1,20 @@
+{
+  "name": "@sveltering/custom-store",
+  "version": "0.0.19",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sveltering/custom-store"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./customStore": "./customStore.js",
+    ".": "./index.js",
+    "./readableStore/readableStore": "./readableStore/readableStore.js",
+    "./readableStore/subscriberStore/subscriberStore": "./readableStore/subscriberStore/subscriberStore.js",
+    "./writableStore/arrayStore/arrayStore": "./writableStore/arrayStore/arrayStore.js",
+    "./writableStore/keyValueStore/keyValueStore": "./writableStore/keyValueStore/keyValueStore.js",
+    "./writableStore/proxyStore/proxyStore": "./writableStore/proxyStore/proxyStore.js",
+    "./writableStore/writableStore": "./writableStore/writableStore.js"
+  }
+}

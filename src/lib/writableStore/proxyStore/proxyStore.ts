@@ -6,7 +6,7 @@ export type proxyValueType<T> = T | keyValueType<T>;
 export interface proxyStoreOpts<T> {
 	value: proxyValueType<T>;
 }
-export class _proxyStore<T> extends _writableStore<proxyValueType<T>> {
+export class _proxyStore<T> extends _writableStore<proxyValueType<T>, any> {
 	constructor({ value }: proxyStoreOpts<T>) {
 		super({ value });
 		return this;

@@ -1,28 +1,27 @@
 <script lang="ts">
-	import { writableStore } from '$lib/index.js';
+	import { proxyStore } from '$lib/index.js';
 
-	function currentTime(): string {
-		return new Date().toTimeString();
-	}
-
-	let time = writableStore<string>(currentTime());
-
-	time.$hasSubscriber.subscribe((hasSubscriber) => {
-		console.log(hasSubscriber);
-		if (hasSubscriber) {
-			console.log('We have a sub');
-			return;
-		}
-		console.log('No subs :(');
+	//keyValue store uses Proxy, but will only react to changes directly to the root object.
+	//To react to any changes to any object/array in the store use proxyStore
+	let numbers = proxyStore<string>({
+		one: 'ONE',
+		two: 'TWO',
+		three: 'THREE'
 	});
 
-	let unsub: CallableFunction;
-
 	setTimeout(() => {
-		unsub = time.subscribe((value) => {});
+		numbers.value.four = 'FOUR';
 	}, 1000);
-
 	setTimeout(() => {
-		unsub();
+		numbers.value.five = 'FIVE';
+	}, 2000);
+	setTimeout(() => {
+		numbers.value.six = 'SIX';
 	}, 3000);
+
+	$: console.log($numbers);
 </script>
+
+{#each Object.keys($numbers) as key}
+	{key} : {$numbers[key]} <br />
+{/each}

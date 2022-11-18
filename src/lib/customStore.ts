@@ -8,7 +8,7 @@ export interface customStoreOpts<T> {
 	hasSubscriber?: boolean;
 }
 
-export default class _customStore<T> {
+export default class _customStore<T, R extends T> {
 	$store: Readable<T> | Writable<T>;
 	_destroys: (CallableFunction | null)[] = [];
 	_setNull: () => void;
@@ -71,10 +71,10 @@ export default class _customStore<T> {
 		this._setNull();
 		let properties = Object.getOwnPropertyNames(this);
 		for (let i = 0, iLen = properties.length; i < iLen; i++) {
-			delete this[properties[i] as keyof _customStore<T>];
+			delete this[properties[i] as keyof _customStore<T, R>];
 		}
 	}
-	get(): T {
-		return get(this.$store);
+	get(): R {
+		return get(this.$store) as unknown as R;
 	}
 }

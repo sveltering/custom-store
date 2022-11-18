@@ -6,7 +6,7 @@ export interface readableStoreOpts<T> {
 	value: T;
 }
 
-export class _readableStore<T> extends _customStore<T> {
+export class _readableStore<T> extends _customStore<T, T> {
 	declare $store: Readable<T>;
 	$hasSubscriber: subscriberStore;
 	constructor({ value }: readableStoreOpts<T>) {
