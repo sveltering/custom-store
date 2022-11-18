@@ -10,7 +10,7 @@
 	});
 
 	setTimeout(() => {
-		numbers.value.four = 'FOUR';
+		numbers.value.four = 1;
 	}, 1000);
 	setTimeout(() => {
 		numbers.value.five = 'FIVE';
@@ -18,8 +18,12 @@
 	setTimeout(() => {
 		numbers.value.six = 'SIX';
 	}, 3000);
+	setTimeout(() => {
+		delete numbers.value.djhdjh;
+	}, 4000);
 
 	$: console.log($numbers);
+	$numbers;
 </script>
 
 {#each Object.keys($numbers) as key}

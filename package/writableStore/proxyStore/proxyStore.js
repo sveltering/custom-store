@@ -41,11 +41,10 @@ function proxify({ target, _this }) {
             return true;
         },
         deleteProperty(target, property) {
-            if (!(property in target)) {
-                return false;
+            if (property in target) {
+                delete target[property];
+                _this.$store.set(_this._proxy.value);
             }
-            delete target[property];
-            _this.$store.set(_this._proxy.value);
             return true;
         }
     });
