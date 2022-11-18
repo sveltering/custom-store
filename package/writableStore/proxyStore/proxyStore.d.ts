@@ -1,6 +1,6 @@
 import { _writableStore } from '../writableStore.js';
 import type { keyValueType } from '../keyValueStore/keyValueStore.js';
-export declare type proxyValueType<T> = T | keyValueType<T>;
+export declare type proxyValueType<T> = T | T[] | keyValueType<T>;
 export interface proxyStoreOpts<T> {
     value: proxyValueType<T>;
 }
