@@ -1,17 +1,17 @@
-import { _writableStore } from '../writableStore.js';
+import { WritableStore } from '../writableStore.js';
 
-export interface keyValueType<T> {
+export interface KeyValueType<T> {
 	[key: string | number | symbol]: T;
 }
 export interface keyValueStoreOpts<T> {
-	value: keyValueType<T>;
+	value: KeyValueType<T>;
 }
-class _keyValueStore<T> extends _writableStore<keyValueType<T>, keyValueType<T>> {
+class KeyValueStore<T> extends WritableStore<KeyValueType<T>, KeyValueType<T>> {
 	constructor({ value }: keyValueStoreOpts<T>) {
 		super({ value });
 		return this;
 	}
-	_initProxy(value: keyValueType<T>) {
+	_initProxy(value: KeyValueType<T>) {
 		let _this = this;
 		this._proxy = {} as any;
 		this._proxy.value = new Proxy(value, {
@@ -24,6 +24,8 @@ class _keyValueStore<T> extends _writableStore<keyValueType<T>, keyValueType<T>>
 		this.$store.set(this._proxy.value);
 	}
 }
-export default function keyValueStore<T>(value: keyValueType<T> = {}): _keyValueStore<T> {
-	return new _keyValueStore({ value });
+function keyValueStore<T>(value: KeyValueType<T> = {}): KeyValueStore<T> {
+	return new KeyValueStore({ value });
 }
+export default keyValueStore;
+export { KeyValueStore };

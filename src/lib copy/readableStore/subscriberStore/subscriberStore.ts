@@ -1,11 +1,11 @@
-import customStore from '../../customStore.js';
+import CustomStore from '../../CustomStore.js';
 import type { Writable } from 'svelte/store';
 
 interface SubscriberStoreOpts {
 	value: boolean;
-	_this: customStore<unknown, unknown>;
+	_this: CustomStore<unknown, unknown>;
 }
-export default class subscriberStore extends customStore<boolean, boolean> {
+class SubscriberStore extends CustomStore<boolean, boolean> {
 	declare $store: Writable<boolean>;
 	constructor({ value, _this }: SubscriberStoreOpts) {
 		super({ value });
@@ -13,3 +13,5 @@ export default class subscriberStore extends customStore<boolean, boolean> {
 		return this;
 	}
 }
+
+export default SubscriberStore;

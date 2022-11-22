@@ -1,9 +1,9 @@
 import { WritableStore } from '../writableStore.js';
-export declare type ProxyValueType<T> = T | Array<T> | KeyValueType<T> | KeyValueType<ProxyValueType<T>>;
-export interface KeyValueType<T> {
+declare type ProxyValueType<T> = T | Array<T> | KeyValueType<T> | KeyValueType<ProxyValueType<T>>;
+interface KeyValueType<T> {
     [key: string | number | symbol]: ProxyValueType<T>;
 }
-export interface ProxyStoreOpts<T> {
+interface ProxyStoreOpts<T> {
     value: ProxyValueType<T>;
 }
 declare class ProxyStore<T> extends WritableStore<ProxyValueType<T>, any> {
@@ -13,3 +13,4 @@ declare class ProxyStore<T> extends WritableStore<ProxyValueType<T>, any> {
 declare function proxyStore<T>(value: ProxyValueType<T>): ProxyStore<T>;
 export default proxyStore;
 export { ProxyStore };
+export type { ProxyStoreOpts, ProxyValueType, KeyValueType };

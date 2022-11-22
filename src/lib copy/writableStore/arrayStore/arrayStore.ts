@@ -1,10 +1,10 @@
-import { _writableStore } from '../writableStore.js';
+import { WritableStore } from '../writableStore.js';
 
-export interface arrayStoreOpts<T> {
+export interface ArrayStoreOpts<T> {
 	value: T[];
 }
-class _arrayStore<T> extends _writableStore<T[], T[]> {
-	constructor({ value }: arrayStoreOpts<T>) {
+class ArrayStore<T> extends WritableStore<T[], T[]> {
+	constructor({ value }: ArrayStoreOpts<T>) {
 		super({ value });
 		return this;
 	}
@@ -23,6 +23,9 @@ class _arrayStore<T> extends _writableStore<T[], T[]> {
 		this.$store.set(this._proxy.value);
 	}
 }
-export default function arrayStore<T>(value: T[] = []): _arrayStore<T> {
-	return new _arrayStore({ value });
+function arrayStore<T>(value: T[] = []): ArrayStore<T> {
+	return new ArrayStore({ value });
 }
+
+export default arrayStore;
+export { ArrayStore };

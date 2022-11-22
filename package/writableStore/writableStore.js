@@ -25,7 +25,7 @@ class WritableStore extends CustomStore {
         return this;
     }
     update(callable) {
-        this.value = callable(this.value);
+        this._initProxy(callable(this._proxy.value));
         return this;
     }
 }

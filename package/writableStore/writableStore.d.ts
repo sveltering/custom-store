@@ -1,10 +1,10 @@
 import CustomStore from '../CustomStore.js';
 import SubscriberStore from '../readableStore/SubscriberStore/SubscriberStore.js';
 import type { Writable, Updater } from 'svelte/store';
-export interface WritableStoreOpts<T> {
+interface WritableStoreOpts<T> {
     value: T;
 }
-declare class WritableStore<T, R extends T> extends CustomStore<T, R> implements WritableStore<T, R> {
+declare class WritableStore<T, R extends T = T> extends CustomStore<T, R> {
     $store: Writable<T>;
     $hasSubscriber: SubscriberStore;
     _proxy: {
@@ -20,3 +20,4 @@ declare class WritableStore<T, R extends T> extends CustomStore<T, R> implements
 declare function writableStore<T>(value: T): WritableStore<T, T>;
 export default writableStore;
 export { WritableStore };
+export type { WritableStoreOpts };

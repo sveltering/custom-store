@@ -1,15 +1,6 @@
 import { writable, get } from 'svelte/store';
 import type { Unsubscriber, Subscriber, Writable, Readable } from 'svelte/store';
-import type subscriberStore from './readableStore/subscriberStore/subscriberStore.js';
-
-export interface CustomStore<T, R> {
-	$store: Readable<T> | Writable<T>;
-	$hasSubscriber: subscriberStore;
-	subscribe(callback: Subscriber<T>): Unsubscriber;
-	unsubscribeAll(): this;
-	purge(): void;
-	get(): R;
-}
+import type SubscriberStore from './readableStore/SubscriberStore/SubscriberStore.js';
 
 export interface CustomStoreOpts<T> {
 	value: T;
@@ -17,12 +8,12 @@ export interface CustomStoreOpts<T> {
 	hasSubscriber?: boolean;
 }
 
-export default class _customStore<T, R extends T> implements CustomStore<T, R> {
+class CustomStore<T, R extends T> {
 	$store: Readable<T> | Writable<T>;
 	_destroys: (CallableFunction | null)[] = [];
 	_setNull: () => void;
 	_unsubscribes: (Unsubscriber | null)[] = [];
-	declare $hasSubscriber: subscriberStore;
+	declare $hasSubscriber: SubscriberStore;
 	constructor({ value, isWritable = true, hasSubscriber = false }: CustomStoreOpts<T>) {
 		let _this = this;
 		let $store = writable(value, function start() {
@@ -80,10 +71,12 @@ export default class _customStore<T, R extends T> implements CustomStore<T, R> {
 		this._setNull();
 		let properties = Object.getOwnPropertyNames(this);
 		for (let i = 0, iLen = properties.length; i < iLen; i++) {
-			delete this[properties[i] as keyof _customStore<T, R>];
+			delete this[properties[i] as keyof CustomStore<T, R>];
 		}
 	}
 	get(): R {
 		return get(this.$store) as unknown as R;
 	}
 }
+
+export default CustomStore;

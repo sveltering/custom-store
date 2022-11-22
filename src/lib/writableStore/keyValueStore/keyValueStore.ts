@@ -1,13 +1,13 @@
 import { WritableStore } from '../writableStore.js';
 
-export interface KeyValueType<T> {
+interface KeyValueType<T> {
 	[key: string | number | symbol]: T;
 }
-export interface keyValueStoreOpts<T> {
+interface KeyValueStoreOpts<T> {
 	value: KeyValueType<T>;
 }
-class KeyValueStore<T> extends WritableStore<KeyValueType<T>, KeyValueType<T>> {
-	constructor({ value }: keyValueStoreOpts<T>) {
+class KeyValueStore<T> extends WritableStore<KeyValueType<T>> {
+	constructor({ value }: KeyValueStoreOpts<T>) {
 		super({ value });
 		return this;
 	}
@@ -29,3 +29,4 @@ function keyValueStore<T>(value: KeyValueType<T> = {}): KeyValueStore<T> {
 }
 export default keyValueStore;
 export { KeyValueStore };
+export type { KeyValueStoreOpts, KeyValueType };

@@ -1,25 +1,23 @@
-import _customStore from '../customStore.js';
-import type CustomStore from '../customStore.js';
-import subscriberStore from './subscriberStore/subscriberStore.js';
+import CustomStore from '../CustomStore.js';
+import SubscriberStore from './SubscriberStore/SubscriberStore.js';
 import type { Readable } from 'svelte/store';
 
-export interface ReadableStore<T> extends CustomStore<T, T> {
-	$store: Readable<T>;
-}
-
-export interface readableStoreOpts<T> {
+export interface ReadableStoreOpts<T> {
 	value: T;
 }
 
-export class _readableStore<T> extends _customStore<T, T> implements ReadableStore<T> {
+class ReadableStore<T> extends CustomStore<T, T> {
 	declare $store: Readable<T>;
-	$hasSubscriber: subscriberStore;
-	constructor({ value }: readableStoreOpts<T>) {
+	$hasSubscriber: SubscriberStore;
+	constructor({ value }: ReadableStoreOpts<T>) {
 		super({ value, hasSubscriber: true });
-		this.$hasSubscriber = new subscriberStore({ value: false, _this: this });
+		this.$hasSubscriber = new SubscriberStore({ value: false, _this: this });
 		return this;
 	}
 }
-export default function readableStore<T>(value: T): _readableStore<T> {
-	return new _readableStore({ value });
+function readableStore<T>(value: T): ReadableStore<T> {
+	return new ReadableStore({ value });
 }
+
+export default readableStore;
+export { ReadableStore };

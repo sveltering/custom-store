@@ -5,7 +5,7 @@ interface SubscriberStoreOpts {
 	value: boolean;
 	_this: CustomStore<unknown, unknown>;
 }
-class SubscriberStore extends CustomStore<boolean, boolean> {
+class SubscriberStore extends CustomStore<boolean> {
 	declare $store: Writable<boolean>;
 	constructor({ value, _this }: SubscriberStoreOpts) {
 		super({ value });
@@ -15,3 +15,4 @@ class SubscriberStore extends CustomStore<boolean, boolean> {
 }
 
 export default SubscriberStore;
+export type { SubscriberStoreOpts };

@@ -1,11 +1,11 @@
 import type { Unsubscriber, Subscriber, Writable, Readable } from 'svelte/store';
 import type SubscriberStore from './readableStore/SubscriberStore/SubscriberStore.js';
-export interface CustomStoreOpts<T> {
+interface CustomStoreOpts<T> {
     value: T;
     isWritable?: boolean;
     hasSubscriber?: boolean;
 }
-declare class CustomStore<T, R extends T> {
+declare class CustomStore<T, R = T> {
     $store: Readable<T> | Writable<T>;
     _destroys: (CallableFunction | null)[];
     _setNull: () => void;
@@ -20,3 +20,4 @@ declare class CustomStore<T, R extends T> {
     get(): R;
 }
 export default CustomStore;
+export type { CustomStoreOpts };
