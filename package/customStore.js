@@ -1,5 +1,5 @@
 import { writable, get } from 'svelte/store';
-export default class _customStore {
+class CustomStore {
     $store;
     _destroys = [];
     _setNull;
@@ -68,3 +68,4 @@ export default class _customStore {
         return get(this.$store);
     }
 }
+export default CustomStore;

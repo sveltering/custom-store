@@ -1,5 +1,5 @@
-import { _writableStore } from '../writableStore.js';
-export class _proxyStore extends _writableStore {
+import { WritableStore } from '../writableStore.js';
+class ProxyStore extends WritableStore {
     constructor({ value }) {
         super({ value });
         return this;
@@ -49,6 +49,8 @@ function proxify({ target, _this }) {
         }
     });
 }
-export default function proxyStore(value) {
-    return new _proxyStore({ value });
+function proxyStore(value) {
+    return new ProxyStore({ value });
 }
+export default proxyStore;
+export { ProxyStore };

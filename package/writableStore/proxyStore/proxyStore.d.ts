@@ -1,13 +1,15 @@
-import { _writableStore } from '../writableStore.js';
-export declare type proxyValueType<T> = T | Array<T> | keyValueType<T> | keyValueType<proxyValueType<T>>;
-export interface keyValueType<T> {
-    [key: string | number | symbol]: proxyValueType<T>;
+import { WritableStore } from '../writableStore.js';
+export declare type ProxyValueType<T> = T | Array<T> | KeyValueType<T> | KeyValueType<ProxyValueType<T>>;
+export interface KeyValueType<T> {
+    [key: string | number | symbol]: ProxyValueType<T>;
 }
-export interface proxyStoreOpts<T> {
-    value: proxyValueType<T>;
+export interface ProxyStoreOpts<T> {
+    value: ProxyValueType<T>;
 }
-export declare class _proxyStore<T> extends _writableStore<proxyValueType<T>, any> {
-    constructor({ value }: proxyStoreOpts<T>);
-    _initProxy(value: proxyValueType<T>): void;
+declare class ProxyStore<T> extends WritableStore<ProxyValueType<T>, any> {
+    constructor({ value }: ProxyStoreOpts<T>);
+    _initProxy(value: ProxyValueType<T>): void;
 }
-export default function proxyStore<T>(value: proxyValueType<T>): _proxyStore<T>;
+declare function proxyStore<T>(value: ProxyValueType<T>): ProxyStore<T>;
+export default proxyStore;
+export { ProxyStore };

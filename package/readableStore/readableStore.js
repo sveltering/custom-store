@@ -1,13 +1,15 @@
-import _customStore from '../customStore.js';
-import subscriberStore from './subscriberStore/subscriberStore.js';
-export class _readableStore extends _customStore {
+import CustomStore from '../CustomStore.js';
+import SubscriberStore from './SubscriberStore/SubscriberStore.js';
+class ReadableStore extends CustomStore {
     $hasSubscriber;
     constructor({ value }) {
         super({ value, hasSubscriber: true });
-        this.$hasSubscriber = new subscriberStore({ value: false, _this: this });
+        this.$hasSubscriber = new SubscriberStore({ value: false, _this: this });
         return this;
     }
 }
-export default function readableStore(value) {
-    return new _readableStore({ value });
+function readableStore(value) {
+    return new ReadableStore({ value });
 }
+export default readableStore;
+export { ReadableStore };

@@ -1,5 +1,5 @@
-import { _writableStore } from '../writableStore.js';
-class _keyValueStore extends _writableStore {
+import { WritableStore } from '../writableStore.js';
+class KeyValueStore extends WritableStore {
     constructor({ value }) {
         super({ value });
         return this;
@@ -17,6 +17,8 @@ class _keyValueStore extends _writableStore {
         this.$store.set(this._proxy.value);
     }
 }
-export default function keyValueStore(value = {}) {
-    return new _keyValueStore({ value });
+function keyValueStore(value = {}) {
+    return new KeyValueStore({ value });
 }
+export default keyValueStore;
+export { KeyValueStore };

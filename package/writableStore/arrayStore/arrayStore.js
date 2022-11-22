@@ -1,5 +1,5 @@
-import { _writableStore } from '../writableStore.js';
-class _arrayStore extends _writableStore {
+import { WritableStore } from '../writableStore.js';
+class ArrayStore extends WritableStore {
     constructor({ value }) {
         super({ value });
         return this;
@@ -19,6 +19,8 @@ class _arrayStore extends _writableStore {
         this.$store.set(this._proxy.value);
     }
 }
-export default function arrayStore(value = []) {
-    return new _arrayStore({ value });
+function arrayStore(value = []) {
+    return new ArrayStore({ value });
 }
+export default arrayStore;
+export { ArrayStore };

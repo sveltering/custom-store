@@ -1,5 +1,10 @@
 export { default as readableStore } from './readableStore/readableStore.js';
+export type { ReadableStore } from './readableStore/readableStore.js';
 export { default as writableStore } from './writableStore/writableStore.js';
+export type { WritableStore } from './writableStore/writableStore.js';
 export { default as arrayStore } from './writableStore/arrayStore/arrayStore.js';
+export type { ArrayStore } from './writableStore/arrayStore/arrayStore.js';
 export { default as keyValueStore } from './writableStore/keyValueStore/keyValueStore.js';
+export type { KeyValueStore } from './writableStore/keyValueStore/keyValueStore.js';
 export { default as proxyStore } from './writableStore/proxyStore/proxyStore.js';
+export type { ProxyStore } from './writableStore/proxyStore/proxyStore.js';

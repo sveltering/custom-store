@@ -1,12 +1,12 @@
-import _customStore from '../customStore.js';
-import subscriberStore from '../readableStore/subscriberStore/subscriberStore.js';
-export class _writableStore extends _customStore {
+import CustomStore from '../CustomStore.js';
+import SubscriberStore from '../readableStore/SubscriberStore/SubscriberStore.js';
+class WritableStore extends CustomStore {
     $hasSubscriber;
     constructor({ value }) {
         super({ value, hasSubscriber: true });
         this.value = value;
         let _this = this;
-        this.$hasSubscriber = new subscriberStore({ value: false, _this });
+        this.$hasSubscriber = new SubscriberStore({ value: false, _this });
         this._destroys.push(() => (_this._proxy = null));
         return this;
     }
@@ -29,6 +29,8 @@ export class _writableStore extends _customStore {
         return this;
     }
 }
-export default function writableStore(value) {
-    return new _writableStore({ value });
+function writableStore(value) {
+    return new WritableStore({ value });
 }
+export default writableStore;
+export { WritableStore };
