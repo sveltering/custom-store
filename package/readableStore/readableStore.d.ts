@@ -1,9 +1,9 @@
 import CustomStore from '../CustomStore.js';
 import SubscriberStore from './SubscriberStore/SubscriberStore.js';
 import type { Readable } from 'svelte/store';
-interface ReadableStoreOpts<T> {
+declare type ReadableStoreOpts<T> = {
     value: T;
-}
+};
 declare class ReadableStore<T> extends CustomStore<T> {
     $store: Readable<T>;
     $hasSubscriber: SubscriberStore;

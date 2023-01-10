@@ -3,9 +3,9 @@ declare type ProxyValueType<T> = T | Array<T> | KeyValueType<T> | KeyValueType<P
 interface KeyValueType<T> {
     [key: string | number | symbol]: ProxyValueType<T>;
 }
-interface ProxyStoreOpts<T> {
+declare type ProxyStoreOpts<T> = {
     value: ProxyValueType<T>;
-}
+};
 declare class ProxyStore<T> extends WritableStore<ProxyValueType<T>, any> {
     constructor({ value }: ProxyStoreOpts<T>);
     _initProxy(value: ProxyValueType<T>): void;

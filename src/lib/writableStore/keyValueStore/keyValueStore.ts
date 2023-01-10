@@ -1,11 +1,11 @@
 import { WritableStore } from '../writableStore.js';
 
-interface KeyValueType<T> {
+type KeyValueType<T> = {
 	[key: string | number | symbol]: T;
-}
-interface KeyValueStoreOpts<T> {
+};
+type KeyValueStoreOpts<T> = {
 	value: KeyValueType<T>;
-}
+};
 class KeyValueStore<T> extends WritableStore<KeyValueType<T>> {
 	constructor({ value }: KeyValueStoreOpts<T>) {
 		super({ value });

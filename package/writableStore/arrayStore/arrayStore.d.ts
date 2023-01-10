@@ -1,7 +1,7 @@
 import { WritableStore } from '../writableStore.js';
-interface ArrayStoreOpts<T> {
+declare type ArrayStoreOpts<T> = {
     value: T[];
-}
+};
 declare class ArrayStore<T> extends WritableStore<T[]> {
     constructor({ value }: ArrayStoreOpts<T>);
     protected _initProxy(value: T[]): void;

@@ -1,8 +1,8 @@
 import { WritableStore } from '../writableStore.js';
 
-interface ArrayStoreOpts<T> {
+type ArrayStoreOpts<T> = {
 	value: T[];
-}
+};
 class ArrayStore<T> extends WritableStore<T[]> {
 	constructor({ value }: ArrayStoreOpts<T>) {
 		super({ value });
