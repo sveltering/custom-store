@@ -12,6 +12,13 @@ class KeyValueStore extends WritableStore {
                 target[property] = value;
                 _this.$store.set(target);
                 return true;
+            },
+            deleteProperty(target, property) {
+                if (property in target) {
+                    delete target[property];
+                    _this.$store.set(target);
+                }
+                return true;
             }
         });
         this.$store.set(this._proxy.value);
