@@ -5,7 +5,7 @@ declare type CustomStoreOpts<T> = {
     isWritable?: boolean;
     hasSubscriber?: boolean;
 };
-declare class CustomStore<T, R = T> {
+declare class CustomStore<T> {
     $store: Readable<T> | Writable<T>;
     _destroys: (CallableFunction | null)[];
     _setNull: () => void;
@@ -17,7 +17,7 @@ declare class CustomStore<T, R = T> {
     unsubscribeAll(): this;
     protected _runDestroys(): void;
     purge(): void;
-    get(): R;
+    get(): T;
 }
 export default CustomStore;
 export type { CustomStoreOpts };

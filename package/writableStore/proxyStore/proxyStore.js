@@ -22,7 +22,9 @@ function proxify({ target, _this }) {
             if (property === '_$$isProxyStore') {
                 return true;
             }
-            if (!target?.[property]?._$$isProxyStore &&
+            if (
+            //@ts-ignore
+            !target?.[property]?._$$isProxyStore &&
                 target.hasOwnProperty(property) &&
                 isProxyableType(target[property])) {
                 target[property] = proxify({
@@ -41,6 +43,9 @@ function proxify({ target, _this }) {
             return true;
         },
         deleteProperty(target, property) {
+            if (target === _this._proxy) {
+                return true;
+            }
             if (property in target) {
                 delete target[property];
                 _this.$store.set(_this._proxy.value);
@@ -49,7 +54,7 @@ function proxify({ target, _this }) {
         }
     });
 }
-function proxyStore(value) {
+function proxyStore(value = {}) {
     return new ProxyStore({ value });
 }
 export default proxyStore;

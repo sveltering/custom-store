@@ -18,7 +18,7 @@ declare class ArrayStore<T> extends WritableStore<T[]> {
     removeLast(value: T): this;
     removeEvery(value: T): this;
     remove(index: number): this;
-    pluck(index: number): T | void;
+    pluck(index: number): T | undefined;
 }
 declare function arrayStore<T>(value?: T[]): ArrayStore<T>;
 export default arrayStore;

@@ -8,7 +8,7 @@ type CustomStoreOpts<T> = {
 	hasSubscriber?: boolean;
 };
 
-class CustomStore<T> {
+class CustomStore<T, R = T> {
 	$store: Readable<T> | Writable<T>;
 	_destroys: (CallableFunction | null)[] = [];
 	_setNull: () => void;
@@ -16,7 +16,7 @@ class CustomStore<T> {
 	declare $hasSubscriber: SubscriberStore;
 	constructor({ value, isWritable = true, hasSubscriber = false }: CustomStoreOpts<T>) {
 		let _this = this;
-		let $store = writable<T>(value, function start() {
+		let $store = writable(value, function start() {
 			if (hasSubscriber) {
 				_this.$hasSubscriber.$store.set(true);
 			}
@@ -71,11 +71,11 @@ class CustomStore<T> {
 		this._setNull();
 		let properties = Object.getOwnPropertyNames(this);
 		for (let i = 0, iLen = properties.length; i < iLen; i++) {
-			delete this[properties[i] as keyof CustomStore<T>];
+			delete this[properties[i] as keyof CustomStore<T, R>];
 		}
 	}
-	get(): T {
-		return get<T>(this.$store);
+	get(): R {
+		return get(this.$store) as unknown as R;
 	}
 }
 

@@ -1,25 +1,19 @@
 import { WritableStore } from '../writableStore.js';
 
-type ProxyValueType<T> = T | Array<T> | KeyValueType<T> | KeyValueType<ProxyValueType<T>>;
-
-interface KeyValueType<T> {
-	[key: string | number | symbol]: ProxyValueType<T>;
-}
-
 type ProxyStoreOpts<T> = {
-	value: ProxyValueType<T>;
+	value: T;
 };
-class ProxyStore<T> extends WritableStore<ProxyValueType<T>, any> {
+class ProxyStore<T extends object> extends WritableStore<T> {
 	constructor({ value }: ProxyStoreOpts<T>) {
 		super({ value });
 		return this;
 	}
-	_initProxy(value: ProxyValueType<T>) {
+	_initProxy(value: T) {
 		this._proxy = { value };
-		this._proxy = proxify({
-			target: this._proxy,
+		this._proxy = proxify<T>({
+			target: this._proxy as any,
 			_this: this
-		}) as { value: ProxyValueType<T> };
+		}) as { value: T };
 		this.$store.set(this._proxy.value);
 	}
 }
@@ -27,49 +21,53 @@ let isProxyableType = function (obj: unknown): boolean {
 	return !!obj && (obj.constructor === Object || obj.constructor === Array);
 };
 
-type ProxifyOpts<T> = {
-	target: KeyValueType<T>;
+type ProxifyOpts<T extends object> = {
+	target: T;
 	_this: ProxyStore<T>;
 };
-function proxify<T>({ target, _this }: ProxifyOpts<T>) {
-	return new Proxy(target, {
+function proxify<T extends object>({ target, _this }: ProxifyOpts<T>) {
+	return new Proxy(target as object, {
 		get: function (target, property) {
 			if (property === '_$$isProxyStore') {
 				return true;
 			}
 			if (
-				!(target?.[property] as KeyValueType<T>)?._$$isProxyStore &&
+				//@ts-ignore
+				!target?.[property as keyof typeof target]?._$$isProxyStore &&
 				target.hasOwnProperty(property) &&
-				isProxyableType(target[property])
+				isProxyableType(target[property as keyof typeof target])
 			) {
-				target[property] = proxify({
-					target: target[property] as KeyValueType<T>,
+				target[property as keyof typeof target] = proxify({
+					target: target[property as keyof typeof target],
 					_this
-				});
+				}) as never;
 			}
-			return target?.[property];
+			return target?.[property as keyof typeof target];
 		},
 		set: function (target, property, value) {
-			if (target?.[property] === value) {
+			if (target?.[property as keyof typeof target] === value) {
 				return true;
 			}
-			target[property] = value;
+			target[property as keyof typeof target] = value as never;
 			_this.$store.set(_this._proxy.value);
 			return true;
 		},
 		deleteProperty(target, property) {
+			if (target === _this._proxy) {
+				return true;
+			}
 			if (property in target) {
-				delete target[property];
+				delete target[property as keyof typeof target];
 				_this.$store.set(_this._proxy.value);
 			}
 			return true;
 		}
 	});
 }
-function proxyStore<T>(value: ProxyValueType<T>): ProxyStore<T> {
+function proxyStore<T extends object>(value: T = {} as any): ProxyStore<T> {
 	return new ProxyStore({ value });
 }
 
 export default proxyStore;
 export { ProxyStore };
-export type { ProxyStoreOpts, ProxyValueType, KeyValueType };
+export type { ProxyStoreOpts };

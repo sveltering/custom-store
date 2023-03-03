@@ -88,7 +88,7 @@ class ArrayStore<T> extends WritableStore<T[]> {
 		return this;
 	}
 
-	pluck(index: number): T | undefined {
+	pluck(index: number): T | void {
 		let plucked = this.value.splice(index, 1);
 		return plucked.length ? plucked[0] : undefined;
 	}

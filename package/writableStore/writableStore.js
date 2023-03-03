@@ -11,7 +11,7 @@ class WritableStore extends CustomStore {
         return this;
     }
     _initProxy(value) {
-        this._proxy = { value: value };
+        this._proxy = { value };
         this.$store.set(this._proxy.value);
     }
     set value(value) {

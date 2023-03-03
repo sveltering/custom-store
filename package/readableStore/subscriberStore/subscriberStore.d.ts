@@ -2,7 +2,7 @@ import CustomStore from '../../CustomStore.js';
 import type { Writable } from 'svelte/store';
 declare type SubscriberStoreOpts = {
     value: boolean;
-    _this: CustomStore<unknown, unknown>;
+    _this: CustomStore<unknown>;
 };
 declare class SubscriberStore extends CustomStore<boolean> {
     $store: Writable<boolean>;

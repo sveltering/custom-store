@@ -5,10 +5,10 @@ import type { Writable, Updater } from 'svelte/store';
 type WritableStoreOpts<T> = {
 	value: T;
 };
-class WritableStore<T> extends CustomStore<T> {
+class WritableStore<T, R extends T = T> extends CustomStore<T, R> {
 	declare $store: Writable<T>;
 	$hasSubscriber: SubscriberStore;
-	declare _proxy: { value: T };
+	declare _proxy: { value: R };
 	constructor({ value }: WritableStoreOpts<T>) {
 		super({ value, hasSubscriber: true });
 		this.value = value;
@@ -18,13 +18,13 @@ class WritableStore<T> extends CustomStore<T> {
 		return this;
 	}
 	protected _initProxy(value: T): void {
-		this._proxy = { value };
-		this.$store.set(this._proxy.value);
+		this._proxy = { value: value as unknown as R };
+		this.$store.set(this._proxy.value as unknown as T);
 	}
 	set value(value: T) {
 		this._initProxy(value);
 	}
-	get value(): T {
+	get value(): R {
 		return this._proxy.value;
 	}
 	set(value: T): this {
@@ -32,12 +32,12 @@ class WritableStore<T> extends CustomStore<T> {
 		return this;
 	}
 	update(callable: Updater<T>): this {
-		this._initProxy(callable(this._proxy.value));
+		this._initProxy(callable(this._proxy.value as unknown as T));
 		return this;
 	}
 }
-function writableStore<T>(value: T): WritableStore<T> {
-	return new WritableStore<T>({ value });
+function writableStore<T>(value: T): WritableStore<T, T> {
+	return new WritableStore({ value });
 }
 
 export default writableStore;
