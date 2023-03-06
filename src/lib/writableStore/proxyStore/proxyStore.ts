@@ -65,7 +65,7 @@ function proxify<T extends object>({ target, _this }: ProxifyOpts<T>) {
 	});
 }
 function proxyStore<T extends object>(value: T = {} as any): ProxyStore<T> {
-	return new ProxyStore({ value });
+	return new ProxyStore<T>({ value });
 }
 
 export default proxyStore;

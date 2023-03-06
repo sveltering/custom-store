@@ -80,7 +80,7 @@ class ArrayStore extends WritableStore {
     }
     pluck(index) {
         let plucked = this.value.splice(index, 1);
-        return plucked?.length ? plucked[0] : undefined;
+        return plucked.length ? plucked[0] : undefined;
     }
 }
 function arrayStore(value = []) {

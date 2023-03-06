@@ -1,17 +1,14 @@
 import { WritableStore } from '../writableStore.js';
 
-type ArrayElement<ArrayType extends readonly unknown[]> =
-	ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
-
 type ArrayStoreOpts<T> = {
-	value: T;
+	value: T[];
 };
-class ArrayStore<T extends unknown[]> extends WritableStore<T> {
+class ArrayStore<T> extends WritableStore<T[]> {
 	constructor({ value }: ArrayStoreOpts<T>) {
 		super({ value });
 		return this;
 	}
-	protected _initProxy(value: T): void {
+	protected _initProxy(value: T[]): void {
 		let _this = this;
 		this._proxy = {} as any;
 		this._proxy.value = new Proxy(value, {
@@ -33,7 +30,7 @@ class ArrayStore<T extends unknown[]> extends WritableStore<T> {
 		this.$store.set(this._proxy.value);
 	}
 
-	protected _insert_index(after: boolean = true, needleIndex: number, ...values: T): this {
+	protected _insert_index(after: boolean = true, needleIndex: number, ...values: T[]): this {
 		if (needleIndex < 0) {
 			return this;
 		}
@@ -41,53 +38,48 @@ class ArrayStore<T extends unknown[]> extends WritableStore<T> {
 
 		let array1 = this.value.slice(0, sliceFrom);
 		let array2 = this.value.slice(sliceFrom);
-		this.value = [...array1, ...values, ...array2] as T;
+		this.value = [...array1, ...values, ...array2];
 		return this;
 	}
 
-	protected _insert(
-		after: boolean = true,
-		first: boolean = true,
-		needle: ArrayElement<T>,
-		...values: T
-	): this {
+	protected _insert(after: boolean = true, first: boolean = true, needle: T, ...values: T[]): this {
 		let needleIndex = first ? this.value.indexOf(needle) : this.value.lastIndexOf(needle);
 		return this._insert_index(after, needleIndex, ...values);
 	}
 
-	addAfter(needleIndex: number, ...values: T): this {
+	addAfter(needleIndex: number, ...values: T[]): this {
 		return this._insert_index(true, needleIndex, ...values);
 	}
-	addBefore(needleIndex: number, ...values: T): this {
+	addBefore(needleIndex: number, ...values: T[]): this {
 		return this._insert_index(false, needleIndex, ...values);
 	}
-	addAfterFirst(needle: ArrayElement<T>, ...values: T): this {
+	addAfterFirst(needle: T, ...values: T[]): this {
 		return this._insert(true, true, needle, ...values);
 	}
-	addBeforeFirst(needle: ArrayElement<T>, ...values: T): this {
+	addBeforeFirst(needle: T, ...values: T[]): this {
 		return this._insert(false, true, needle, ...values);
 	}
-	addAfterLast(needle: ArrayElement<T>, ...values: T): this {
+	addAfterLast(needle: T, ...values: T[]): this {
 		return this._insert(true, false, needle, ...values);
 	}
-	addBeforeLast(needle: ArrayElement<T>, ...values: T): this {
+	addBeforeLast(needle: T, ...values: T[]): this {
 		return this._insert(false, false, needle, ...values);
 	}
-	protected _remove_first_last(first: boolean, value: ArrayElement<T>): this {
+	protected _remove_first_last(first: boolean, value: T): this {
 		let index = first ? this.value.indexOf(value) : this.value.lastIndexOf(value);
 		if (index > -1) {
 			this.value.splice(index, 1);
 		}
 		return this;
 	}
-	removeFirst(value: ArrayElement<T>): this {
+	removeFirst(value: T): this {
 		return this._remove_first_last(true, value);
 	}
-	removeLast(value: ArrayElement<T>): this {
+	removeLast(value: T): this {
 		return this._remove_first_last(false, value);
 	}
-	removeEvery(value: ArrayElement<T>): this {
-		this.value = this.value.filter((x: unknown) => x !== value) as T;
+	removeEvery(value: T): this {
+		this.value = this.value.filter((x: T) => x !== value);
 		return this;
 	}
 
@@ -96,13 +88,13 @@ class ArrayStore<T extends unknown[]> extends WritableStore<T> {
 		return this;
 	}
 
-	pluck(index: number): ArrayElement<T> | undefined {
+	pluck(index: number): T | undefined {
 		let plucked = this.value.splice(index, 1);
-		return plucked?.length ? (plucked[0] as ArrayElement<T>) : undefined;
+		return plucked.length ? plucked[0] : undefined;
 	}
 }
-function arrayStore<T extends unknown[]>(value: T = [] as any): ArrayStore<T> {
-	return new ArrayStore<T>({ value });
+function arrayStore<T>(value: T[] = []): ArrayStore<T> {
+	return new ArrayStore({ value });
 }
 
 export default arrayStore;

@@ -16,7 +16,7 @@ class ReadableStore<T> extends CustomStore<T> {
 	}
 }
 function readableStore<T>(value: T): ReadableStore<T> {
-	return new ReadableStore({ value });
+	return new ReadableStore<T>({ value });
 }
 
 export default readableStore;
